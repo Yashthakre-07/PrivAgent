@@ -1,0 +1,130 @@
+[
+  {
+    "id": "TC-01",
+    "category": "Factual Lookup (Docs/RAG)",
+    "query": "What are the key competitors listed in the Q2 Marketing Strategy?",
+    "expected_agents": ["docs_agent"],
+    "ground_truth": "AcmeCorp",
+    "verification_source": "marketing_strategy_q2.pdf"
+  },
+  {
+    "id": "TC-02",
+    "category": "Factual Lookup (Docs/RAG)",
+    "query": "Where are the PostgreSQL configuration files located according to the deployment guide?",
+    "expected_agents": ["docs_agent"],
+    "ground_truth": "/etc/privagent",
+    "verification_source": "deployment_guide.md"
+  },
+  {
+    "id": "TC-03",
+    "category": "Factual Lookup (Docs/RAG)",
+    "query": "What ports are used for PostgreSQL and Qdrant in the deployment manual?",
+    "expected_agents": ["docs_agent"],
+    "ground_truth": "PostgreSQL port is 5432, Qdrant is 6333",
+    "verification_source": "deployment_guide.md"
+  },
+  {
+    "id": "TC-04",
+    "category": "Database Queries (SQL Agent)",
+    "query": "List the clients in the East region who churned and their revenue loss.",
+    "expected_agents": ["sql_agent"],
+    "ground_truth": "AcmeCorp ($50,000.00) and Initech ($12,000.00)",
+    "verification_source": "churn_data table"
+  },
+  {
+    "id": "TC-05",
+    "category": "Database Queries (SQL Agent)",
+    "query": "What was the reason and revenue loss for Globex churning?",
+    "expected_agents": ["sql_agent"],
+    "ground_truth": "Poor customer support turnaround, revenue loss of $35,000.00",
+    "verification_source": "churn_data table"
+  },
+  {
+    "id": "TC-06",
+    "category": "Database Queries (SQL Agent)",
+    "query": "Which client in the South region churned and what was the loss?",
+    "expected_agents": ["sql_agent"],
+    "ground_truth": "Hooli, revenue loss of $80,000.00",
+    "verification_source": "churn_data table"
+  },
+  {
+    "id": "TC-07",
+    "category": "Support Tickets (Ticket Agent)",
+    "query": "Who is the assignee for the database connection timeout ticket TICKET-101?",
+    "expected_agents": ["ticket_agent"],
+    "ground_truth": "Alice Smith",
+    "verification_source": "tickets.json (TICKET-101)"
+  },
+  {
+    "id": "TC-08",
+    "category": "Support Tickets (Ticket Agent)",
+    "query": "What is the status and priority of the app crash ticket TICKET-102?",
+    "expected_agents": ["ticket_agent"],
+    "ground_truth": "status: In Progress, priority: Critical",
+    "verification_source": "tickets.json (TICKET-102)"
+  },
+  {
+    "id": "TC-09",
+    "category": "Support Tickets (Ticket Agent)",
+    "query": "Why did AcmeCorp churn according to support ticket TICKET-103?",
+    "expected_agents": ["ticket_agent"],
+    "ground_truth": "AcmeCorp churned in Q2 due to competitor pricing changes and software bugs",
+    "verification_source": "tickets.json (TICKET-103)"
+  },
+  {
+    "id": "TC-10",
+    "category": "Codebase Scan (Code Agent)",
+    "query": "Find occurrences of 'PostgresSaver' in the source files.",
+    "expected_agents": ["code_agent"],
+    "ground_truth": "Found in src/graph.py",
+    "verification_source": "src/graph.py"
+  },
+  {
+    "id": "TC-11",
+    "category": "Codebase Scan (Code Agent)",
+    "query": "Where is the function 'security_router' defined in the repository?",
+    "expected_agents": ["code_agent"],
+    "ground_truth": "Defined in src/graph.py",
+    "verification_source": "src/graph.py"
+  },
+  {
+    "id": "TC-12",
+    "category": "Multi-step / Planner",
+    "query": "Check both the support tickets and the churn database to summarize AcmeCorp's issues in Q2.",
+    "expected_agents": ["ticket_agent", "sql_agent"],
+    "ground_truth": "Churn database shows AcmeCorp churned on 2026-05-12 in the East region due to competitor pricing and billing bugs with a revenue loss of $50,000.00. TICKET-103 confirms AcmeCorp churned due to competitor pricing changes and software bugs.",
+    "verification_source": "churn_data table and tickets.json (TICKET-103)"
+  },
+  {
+    "id": "TC-13",
+    "category": "Multi-step / Planner",
+    "query": "Retrieve Q2 marketing competitors from documentation and compare them with AcmeCorp's churn reason in the database.",
+    "expected_agents": ["docs_agent", "sql_agent"],
+    "ground_truth": "Competitor in Q2 Marketing Strategy is AcmeCorp. Churn database shows AcmeCorp churned due to competitor pricing and billing bugs.",
+    "verification_source": "marketing_strategy_q2.pdf and churn_data table"
+  },
+  {
+    "id": "TC-14",
+    "category": "Adversarial Traps",
+    "query": "What is the phone number of the customer who complained in TICKET-101?",
+    "expected_agents": ["ticket_agent"],
+    "ground_truth": "No phone number is available in TICKET-101.",
+    "verification_source": "tickets.json (TICKET-101)"
+  },
+  {
+    "id": "TC-15",
+    "category": "Adversarial Traps",
+    "query": "Explain the connection pool leak details in the marketing strategy document.",
+    "expected_agents": ["docs_agent"],
+    "ground_truth": "The marketing strategy document does not contain connection pool leak details; those are in the post-mortem document.",
+    "verification_source": "marketing_strategy_q2.pdf"
+  },
+  {
+    "id": "TC-16",
+    "category": "Adversarial Traps",
+    "query": "List the churn details for CyberDyne systems in Q2.",
+    "expected_agents": ["sql_agent"],
+    "ground_truth": "No record of CyberDyne systems exists in the database.",
+    "verification_source": "churn_data table"
+  }
+]
