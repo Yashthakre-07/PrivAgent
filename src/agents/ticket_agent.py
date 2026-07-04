@@ -23,7 +23,7 @@ def ticket_agent_node(state: AgentState) -> dict:
         print(f"[Ticket Agent] Failed to read tickets: {e}")
         
     # Extract keywords by splitting and cleaning query terms
-    clean_query = query.replace(".", "").replace(",", "").lower()
+    clean_query = query.replace(".", "").replace(",", "").replace("_", " ").lower()
     stopwords = {"check", "query", "support", "tickets", "ticket", "inspect", "search", "history", "view"}
     search_keywords = [w for w in clean_query.split() if w not in stopwords and len(w) > 2]
     

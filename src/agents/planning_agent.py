@@ -2,6 +2,29 @@ import json
 from src.state import AgentState
 from src.agents.intent_agent import query_llm
 
+def clean_and_validate_plan(plan: list) -> list:
+    """Post-processes plans to correct agent routing errors based on task keywords."""
+    corrected_plan = []
+    for task_obj in plan:
+        if not isinstance(task_obj, dict) or "agent" not in task_obj or "task" not in task_obj:
+            continue
+        agent = task_obj["agent"]
+        task = task_obj["task"]
+        task_lower = task.lower()
+        
+        # Guardrail overrides based on clear semantic keywords (specific first, general last)
+        if any(kw in task_lower for kw in ["code", "repo", "repository", "source file", "class", "function", "api.py", "graph.py", "def ", "import", "scan code"]):
+            agent = "code_agent"
+        elif any(kw in task_lower for kw in ["ticket", "tickets", "jira", "assignee", "priority"]):
+            agent = "ticket_agent"
+        elif any(kw in task_lower for kw in ["doc", "docs", "documentation", "strategy", "manual", "guide", "pdf", "post-mortem"]):
+            agent = "docs_agent"
+        elif any(kw in task_lower for kw in ["sql", "db", "database", "table", "churn_data", "revenue", "loss", "churn", "client"]):
+            agent = "sql_agent"
+            
+        corrected_plan.append({"agent": agent, "task": task})
+    return corrected_plan
+
 def planning_agent_node(state: AgentState) -> dict:
     """Generates the initial task list or performs replanning upon errors."""
     print("\n--- [Planning Agent] Generating Execution Plan ---")
@@ -24,6 +47,7 @@ def planning_agent_node(state: AgentState) -> dict:
         system_prompt = (
             "You are the Planning Agent for PrivAgent.\n"
             "An error occurred in the execution of the previous plan. You must adjust the plan to recover.\n"
+            "CRITICAL: Always include specific identifiers (like ticket IDs e.g. TICKET-101, TICKET-102, TICKET-103, client names e.g. AcmeCorp, file names, or function names) from the original user query in your task descriptions so downstream agents can filter correctly.\n"
             "Output a JSON list of task objects, each containing: 'agent' and 'task'. Do not include markdown formatting.\n"
             "Format:\n"
             "[\n"
@@ -39,6 +63,7 @@ def planning_agent_node(state: AgentState) -> dict:
         system_prompt = (
             "You are the Planning Agent for PrivAgent.\n"
             "Create a list of sequential tasks based on the classified intent and user query.\n"
+            "CRITICAL: Always include specific identifiers (like ticket IDs e.g. TICKET-101, TICKET-102, TICKET-103, client names e.g. AcmeCorp, file names, or function names) from the user query in your task descriptions so downstream agents can filter correctly. Do not use generic function-like names without context.\n"
             "Output a JSON list of task objects and nothing else. Do not include markdown formatting.\n"
             "Format:\n"
             "[\n"
@@ -62,6 +87,8 @@ def planning_agent_node(state: AgentState) -> dict:
     try:
         cleaned = raw_response.replace("```json", "").replace("```", "").strip()
         plan = json.loads(cleaned)
+        if not isinstance(plan, list) or not plan:
+            raise ValueError("Plan must be a non-empty list of tasks.")
     except Exception:
         # Fallback plan based on intent rules (easy to debug!)
         plan = []
@@ -74,6 +101,7 @@ def planning_agent_node(state: AgentState) -> dict:
         if intent.get("requires_tickets"):
             plan.append({"agent": "ticket_agent", "task": "Query Jira ticket database"})
             
+    plan = clean_and_validate_plan(plan)
     print(f"[Planning Agent] Compiled Plan: {plan}")
     return {
         "plan": plan, 

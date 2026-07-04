@@ -205,7 +205,7 @@ def docs_agent_node(state: AgentState) -> dict:
         
     # Local fallback search: simple word overlap (very clean and interview-friendly!)
     results = []
-    query_words = set(query.lower().split())
+    query_words = set(query.lower().replace("_", " ").split())
     for doc in DOCS:
         doc_words = set(doc["content"].lower().replace(":", "").replace(".", "").split())
         overlap = len(query_words.intersection(doc_words))

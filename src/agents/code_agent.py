@@ -18,7 +18,7 @@ def code_agent_node(state: AgentState) -> dict:
     if not keywords:
         # Fallback: extract terms > 4 chars, excluding typical task stopwords
         stopwords = {"query", "database", "retrieve", "analyze", "document", "summary", "write", "check", "support", "ticket"}
-        keywords = [w for w in query.replace(".", "").replace(",", "").lower().split() if len(w) > 4 and w not in stopwords]
+        keywords = [w for w in query.replace(".", "").replace(",", "").replace("_", " ").lower().split() if len(w) > 4 and w not in stopwords]
         
     print(f"[Code Agent] Extracted search keywords: {keywords}")
     

@@ -14,4 +14,6 @@ class AgentState(TypedDict):
     selected_model: str              # Selected LLM model (optional)
     draft_response: str              # Draft compiled by the Analyst (optional)
     retry_count: int                 # Tracks loops between Analyst and Critic (optional)
+    disable_critic: bool             # Bypasses the critic verification loop for ablation tests (optional)
+
 

@@ -9,6 +9,14 @@ def critic_agent_node(state: AgentState) -> dict:
     user_query = state.get("user_query", "")
     draft_response = state.get("draft_response", "")
     
+    if state.get("disable_critic", False):
+        print("[Critic Agent] Critic verification disabled via state flag. Bypassing check.")
+        return {
+            "critic_feedback": "PASS",
+            "logs": logs + ["[Critic Agent] Critic verification disabled. Bypassed check."]
+        }
+
+    
     system_prompt = (
         "You are the Critic Agent for PrivAgent.\n"
         "Verify the Analyst's draft response against the raw investigator logs.\n"

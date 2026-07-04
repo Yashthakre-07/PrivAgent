@@ -167,6 +167,8 @@ def intent_agent_node(state: AgentState) -> dict:
         # Clean potential markdown wrap if LLM fails to omit it
         cleaned = raw_response.replace("```json", "").replace("```", "").strip()
         intent_dict = json.loads(cleaned)
+        if not isinstance(intent_dict, dict):
+            raise ValueError("Intent must be a dictionary.")
     except Exception:
         # Safe default fallback: do not trigger any agent by default unless keyword matches exist
         intent_dict = {
