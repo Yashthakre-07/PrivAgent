@@ -1,0 +1,26 @@
+[
+  {
+    "id": "TICKET-101",
+    "title": "Customer complains about database connection timeout in Q2",
+    "status": "Closed",
+    "priority": "High",
+    "description": "Client reports connection timeouts when querying the billing database during the afternoon peak hours.",
+    "assignee": "Alice Smith"
+  },
+  {
+    "id": "TICKET-102",
+    "title": "App crash due to null pointer in user dashboard",
+    "status": "In Progress",
+    "priority": "Critical",
+    "description": "Exceptions thrown on dashboard component after v1.2.0 release. Users see blank screens.",
+    "assignee": "Bob Jones"
+  },
+  {
+    "id": "TICKET-103",
+    "title": "Pricing feedback and Q2 customer churn review",
+    "status": "Open",
+    "priority": "Medium",
+    "description": "Account manager reports AcmeCorp churned in Q2 due to competitor pricing changes and software bugs.",
+    "assignee": "Charlie Brown"
+  }
+]

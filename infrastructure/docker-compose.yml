@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  # Relational Database for LangGraph checkpointing and history logs
+  postgres:
+    image: postgres:16-alpine
+    container_name: privagent-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Vector Database for Knowledge Agent document RAG
+  qdrant:
+    image: qdrant/qdrant:v1.9.0
+    container_name: privagent-qdrant
+    restart: always
+    ports:
+      - "${QDRANT_PORT}:6333"
+      - "${QDRANT_GRPC_PORT}:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+
+  # Graph Database for Enterprise Knowledge Graph (relational context)
+  neo4j:
+    image: neo4j:5-community
+    container_name: privagent-neo4j
+    restart: always
+    environment:
+      NEO4J_AUTH: ${NEO4J_USER}/${NEO4J_PASSWORD}
+    ports:
+      - "${NEO4J_PORT_HTTP}:7474"
+      - "${NEO4J_PORT_BOLT}:7687"
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+
+  # Local LLM Runner for privacy and air-gapped execution
+  ollama:
+    image: ollama/ollama:latest
+    container_name: privagent-ollama
+    restart: always
+    ports:
+      - "${OLLAMA_PORT}:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+volumes:
+  postgres_data:
+  qdrant_data:
+  neo4j_data:
+  neo4j_logs:
+  ollama_data:
