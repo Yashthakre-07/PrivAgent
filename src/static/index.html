@@ -25,6 +25,23 @@
             --border-light: #2c3b59;
         }
 
+        .badge-pathway {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            margin-bottom: 0.85rem;
+            letter-spacing: 0.03em;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .badge-p1 { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+        .badge-p2 { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); }
+        .badge-p3 { background: rgba(6, 182, 212, 0.15); color: #38bdf8; border: 1px solid rgba(6, 182, 212, 0.4); }
+        .badge-cache { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.4); }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -1362,8 +1379,10 @@
             <!-- Model Selection -->
             <div class="form-group">
                 <label for="model-select">Target Model</label>
-                <select id="model-select" onchange="updateHeaderModel()" disabled style="cursor: not-allowed; opacity: 0.6;">
-                    <option value="gemma4:latest" selected>Gemma 8B (gemma4:latest)</option>
+                <select id="model-select" onchange="updateHeaderModel()">
+                    <option value="gemma4:latest" selected>gemma4:latest</option>
+                    <option value="qwen3:8b">qwen3:8b</option>
+                    <option value="qwen3:0.6b">qwen3:0.6b</option>
                 </select>
             </div>
         </div>
@@ -1708,11 +1727,11 @@ e.preventDefault();
             
             const hasLog = (pattern) => logs.some(l => l.toLowerCase().includes(pattern.toLowerCase()));
             
-            const p1Done = hasLog("verified and sanitized") || hasLog("rbac check") || hasLog("pii") || hasLog("initiating") || hasLog("spawning");
-            const p2Done = hasLog("generated plan") || planTasks.length > 0;
-            const p3Done = hasLog("analyst") || hasLog("critic") || hasLog("debate") || hasLog("debater") || hasLog("reconciled");
-            const p4Done = hasLog("judge") || status === "completed";
-            const p5Done = status === "completed";
+            const p1Done = hasLog("security agent") || hasLog("prompt cleared") || hasLog("security block") || hasLog("verified and sanitized") || hasLog("rbac check") || hasLog("pii") || hasLog("initiating") || hasLog("spawning") || status === "completed";
+            const p2Done = hasLog("intent agent") || hasLog("planning agent") || hasLog("generated plan") || hasLog("classification bypassed") || hasLog("bypassed") || hasLog("pathway") || planTasks.length > 0 || status === "completed";
+            const p3Done = hasLog("web search agent") || hasLog("duckduckgo") || hasLog("sql agent") || hasLog("docs agent") || hasLog("code agent") || hasLog("ticket agent") || hasLog("analyst") || hasLog("critic") || hasLog("debate") || hasLog("debater") || hasLog("reconciled") || hasLog("pathway_1") || hasLog("fast-track") || hasLog("fast track") || hasLog("bypassed") || status === "completed";
+            const p4Done = hasLog("analyst agent") || hasLog("critic agent") || hasLog("final answer") || hasLog("judge") || status === "completed";
+            const p5Done = status === "completed" || (data.final_response && data.final_response.trim().length > 0);
             
             if (p1Done) {
                 phase1Status = "completed";
@@ -1730,9 +1749,13 @@ e.preventDefault();
                 phase4Status = "completed";
                 phase5Status = "in-progress";
             }
-            if (p5Done && phase4Status === "completed") {
+            if (p5Done) {
+                phase1Status = "completed";
+                phase2Status = "completed";
+                phase3Status = "completed";
+                phase4Status = "completed";
                 phase5Status = "completed";
-            } else if (status === "interrupted" && phase4Status === "completed") {
+            } else if (status === "interrupted") {
                 phase5Status = "need-help";
             }
             
@@ -1781,10 +1804,10 @@ e.preventDefault();
                 <div class="plan-task-item ${phase1Status}">
                     <div class="plan-task-icon">${getIcon(phase1Status)}</div>
                     <div class="plan-task-header ${phase1Status === 'completed' ? 'completed' : ''}">
-                        <span>🔒 Security Gate Check</span>
+                        <span>🔒 Security Gate & Prompt Audit</span>
                         <span class="plan-badge ${phase1Status}">${phase1Status}</span>
                     </div>
-                    <div class="plan-task-description">Checks query safety, sanitizes PII, and verifies access roles in <code style="font-family: monospace; font-size: 0.8rem; background: rgba(255,255,255,0.06); padding: 2px 5px; border-radius: 4px; color: var(--accent-teal);">security_agent.py</code>.</div>
+                    <div class="plan-task-description">Checks query safety, sanitizes PII, and verifies access roles in <code style="font-family: monospace; font-size: 0.8rem; background: rgba(255,255,255,0.06); padding: 2px 5px; border-radius: 4px; color: var(--accent-teal);">router.py</code>.</div>
                 </div>
             `;
             
@@ -1793,10 +1816,10 @@ e.preventDefault();
                 <div class="plan-task-item ${phase2Status}">
                     <div class="plan-task-icon">${getIcon(phase2Status)}</div>
                     <div class="plan-task-header ${phase2Status === 'completed' ? 'completed' : ''}">
-                        <span>⚙️ Intent & Planning</span>
+                        <span>🧠 3-Pathway Smart Router</span>
                         <span class="plan-badge ${phase2Status}">${phase2Status}</span>
                     </div>
-                    <div class="plan-task-description">Classifies query intent and compiles sequential agent execution tasks in <code style="font-family: monospace; font-size: 0.8rem; background: rgba(255,255,255,0.06); padding: 2px 5px; border-radius: 4px; color: var(--accent-teal);">intent_agent.py</code> & <code style="font-family: monospace; font-size: 0.8rem; background: rgba(255,255,255,0.06); padding: 2px 5px; border-radius: 4px; color: var(--accent-teal);">planning_agent.py</code>.</div>
+                    <div class="plan-task-description">Classifies query intent &amp; routes to Fast-Track (Pathway 1), Specialist (Pathway 2), or Multi-Agent (Pathway 3) in <code style="font-family: monospace; font-size: 0.8rem; background: rgba(255,255,255,0.06); padding: 2px 5px; border-radius: 4px; color: var(--accent-teal);">router.py</code>.</div>
                 </div>
             `;
             
@@ -1805,10 +1828,10 @@ e.preventDefault();
                 <div class="plan-task-item ${phase3Status}">
                     <div class="plan-task-icon">${getIcon(phase3Status)}</div>
                     <div class="plan-task-header ${phase3Status === 'completed' ? 'completed' : ''}">
-                        <span>🤖 Orchestrated Node Execution</span>
+                        <span>⚡ Domain Specialist Workers</span>
                         <span class="plan-badge ${phase3Status}">${phase3Status}</span>
                     </div>
-                    <div class="plan-task-description">Runs target workers dynamically (<code style="font-family: monospace; font-size: 0.8rem; background: rgba(255,255,255,0.06); padding: 2px 5px; border-radius: 4px; color: var(--accent-teal);">db_agent.py</code>, <code style="font-family: monospace; font-size: 0.8rem; background: rgba(255,255,255,0.06); padding: 2px 5px; border-radius: 4px; color: var(--accent-teal);">docs_agent.py</code>, <code style="font-family: monospace; font-size: 0.8rem; background: rgba(255,255,255,0.06); padding: 2px 5px; border-radius: 4px; color: var(--accent-teal);">code_agent.py</code>, or <code style="font-family: monospace; font-size: 0.8rem; background: rgba(255,255,255,0.06); padding: 2px 5px; border-radius: 4px; color: var(--accent-teal);">ticket_agent.py</code>).</div>
+                    <div class="plan-task-description">Executes target workers dynamically in <code style="font-family: monospace; font-size: 0.8rem; background: rgba(255,255,255,0.06); padding: 2px 5px; border-radius: 4px; color: var(--accent-teal);">investigators.py</code> (SQL DB, Hybrid RAG, Code, Tickets, or DuckDuckGo Web Search).</div>
             `;
             
             // Dynamic subtasks inside Phase 3 if we have plan tasks
@@ -1822,12 +1845,13 @@ e.preventDefault();
                     }
                     
                     let agentName = "";
-                    let agentFile = "";
-                    if (t.agent === "sql_agent") { agentName = "💾 Database Agent"; agentFile = "db_agent.py"; }
-                    else if (t.agent === "docs_agent") { agentName = "📁 Knowledge Agent"; agentFile = "docs_agent.py"; }
-                    else if (t.agent === "code_agent") { agentName = "💻 Codebase Agent"; agentFile = "code_agent.py"; }
-                    else if (t.agent === "ticket_agent") { agentName = "🎫 Ticket Agent"; agentFile = "ticket_agent.py"; }
-                    else { agentName = "⚙️ Assistant Node"; agentFile = "node"; }
+                    let agentFile = "investigators.py";
+                    if (t.agent === "sql_agent") { agentName = "💾 Database Agent"; }
+                    else if (t.agent === "docs_agent") { agentName = "📁 Knowledge Agent"; }
+                    else if (t.agent === "code_agent") { agentName = "💻 Codebase Agent"; }
+                    else if (t.agent === "ticket_agent") { agentName = "🎫 Ticket Agent"; }
+                    else if (t.agent === "web_search_agent") { agentName = "🌐 DuckDuckGo Web Search"; }
+                    else { agentName = "⚙️ Assistant Node"; agentFile = "router.py"; }
                     
                     html += `
                         <div style="display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.75rem; position: relative;">
@@ -1851,10 +1875,10 @@ e.preventDefault();
                 <div class="plan-task-item ${phase4Status}">
                     <div class="plan-task-icon">${getIcon(phase4Status)}</div>
                     <div class="plan-task-header ${phase4Status === 'completed' ? 'completed' : ''}">
-                        <span>⚖️ Adversarial Debate Synthesis</span>
+                        <span>✨ Synthesis & Verification Shield</span>
                         <span class="plan-badge ${phase4Status}">${phase4Status}</span>
                     </div>
-                    <div class="plan-task-description">Synthesizes findings in <code style="font-family: monospace; font-size: 0.8rem; background: rgba(255,255,255,0.06); padding: 2px 5px; border-radius: 4px; color: var(--accent-teal);">analyst_agent.py</code> and runs a correctness audit loop in <code style="font-family: monospace; font-size: 0.8rem; background: rgba(255,255,255,0.06); padding: 2px 5px; border-radius: 4px; color: var(--accent-teal);">critic_agent.py</code>.</div>
+                    <div class="plan-task-description">Synthesizes investigator findings and performs factuality verification in <code style="font-family: monospace; font-size: 0.8rem; background: rgba(255,255,255,0.06); padding: 2px 5px; border-radius: 4px; color: var(--accent-teal);">synthesizer.py</code>.</div>
                 </div>
             `;
             
@@ -1863,10 +1887,10 @@ e.preventDefault();
                 <div class="plan-task-item ${phase5Status}">
                     <div class="plan-task-icon">${getIcon(phase5Status)}</div>
                     <div class="plan-task-header ${phase5Status === 'completed' ? 'completed' : ''}">
-                        <span>✨ Verification & Final Consensus</span>
+                        <span>🚀 Final Answer Output</span>
                         <span class="plan-badge ${phase5Status}">${phase5Status}</span>
                     </div>
-                    <div class="plan-task-description">Promotes the audited consensus draft response to the final user answer output node.</div>
+                    <div class="plan-task-description">Delivers the formatted Markdown response with visual pathway badges and latency stats.</div>
                 </div>
             `;
             
@@ -1950,12 +1974,24 @@ e.preventDefault();
             // Logs are no longer rendered as accordions are removed.
             
             // Handle state resolution rendering
-            if (data.status === "completed" && responseContainer) {
+            if ((data.status === "completed" || (data.final_response && data.final_response.trim().length > 0)) && responseContainer) {
                 // Remove skeleton loader if visible
                 const skeleton = bubble.querySelector(".skeleton");
                 if (skeleton) skeleton.remove();
                 
-                responseContainer.innerHTML = parseMarkdown(data.final_response);
+                let badgeHtml = "";
+                if (data.pathway === "PATHWAY_1") {
+                    badgeHtml = `<div class="badge-pathway badge-p1">⚡ Pathway 1: Direct Fast-Track (&lt; 0.6s)</div>`;
+                } else if (data.pathway === "PATHWAY_2") {
+                    let agentName = data.target_agent ? data.target_agent.replace("_node", "").replace("_agent", "").toUpperCase() : "TOOL";
+                    badgeHtml = `<div class="badge-pathway badge-p2">🎯 Pathway 2: Single Specialist (${agentName})</div>`;
+                } else if (data.pathway === "PATHWAY_3") {
+                    badgeHtml = `<div class="badge-pathway badge-p3">🚀 Pathway 3: Parallel Multi-Agent Synthesis</div>`;
+                } else if (data.pathway === "PATHWAY_CACHE") {
+                    badgeHtml = `<div class="badge-pathway badge-cache">⚡ CACHE HIT (&lt; 0.05s Response)</div>`;
+                }
+
+                responseContainer.innerHTML = badgeHtml + parseMarkdown(data.final_response);
             } else if (data.status === "interrupted") {
                 // Remove skeleton
                 const skeleton = bubble.querySelector(".skeleton");
@@ -2265,6 +2301,44 @@ e.preventDefault();
                 document.getElementById("prompt-input").disabled = false;
             }
         }
+
+        function updateHeaderModel() {
+            const select = document.getElementById("model-select");
+            const badge = document.getElementById("active-model-badge");
+            const metricModel = document.getElementById("metric-model");
+            if (select && badge) {
+                badge.innerHTML = `<span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: var(--accent-green); box-shadow: 0 0 8px var(--accent-green);"></span> Model: ${select.value}`;
+            }
+            if (metricModel && select) {
+                metricModel.textContent = select.value;
+            }
+        }
+
+        async function fetchAvailableModels() {
+            try {
+                const res = await fetch("/api/models");
+                const data = await res.json();
+                if (data.models && data.models.length > 0) {
+                    const select = document.getElementById("model-select");
+                    if (select) {
+                        const currentVal = select.value;
+                        select.innerHTML = "";
+                        data.models.forEach(m => {
+                            const opt = document.createElement("option");
+                            opt.value = m;
+                            opt.textContent = m;
+                            if (m === currentVal || (!currentVal && m.includes("gemma"))) opt.selected = true;
+                            select.appendChild(opt);
+                        });
+                        updateHeaderModel();
+                    }
+                }
+            } catch (e) {
+                console.warn("Could not fetch models dynamically:", e);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", fetchAvailableModels);
     </script>
 </body>
 </html>

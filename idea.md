@@ -153,6 +153,8 @@ When addressing complex root-cause or strategy questions, the system spawns mult
 Evaluates the outputs of the debate nodes. Rather than choosing a single winner, it synthesizes the arguments by grading the evidence. It requires every conclusion to be backed by verifiable sources (e.g., exact document quotes, database row counts, or git commits).
 
 ```
+                   
+                   
                       ┌───────────────┐
                       │  User Query   │
                       └───────┬───────┘
@@ -293,3 +295,49 @@ When presenting PrivAgent in interviews, transition the narrative from a simple 
 | **"How would you deploy AI where data security is critical?"** | *"We would write a strict NDA and use private cloud endpoints."* | *"I designed PrivAgent to run completely air-gapped. We serve quantized models locally using vLLM on local GPUs, and manage permissions with an integrated Security Agent enforcing department-level RBAC."* |
 | **"How do you handle complex tasks that take multiple steps?"** | *"I would write a long prompt or use a LangChain sequential chain."* | *"I build stateful agent graphs using LangGraph. The Intent Agent categorizes the request, the Planning Agent builds a dynamic task execution plan, and a state machine processes them, offering dynamic replanning if any sub-agent fails."* |
 | **"What are the limitations of standard RAG?"** | *"Sometimes it returns irrelevant documents."* | *"Standard RAG misses the context of organizational relationships. By implementing a Graph-RAG pipeline using Neo4j alongside vector search, we can retrieve multi-hop relationships (e.g., projects, teams, incidents) that single chunks cannot capture."* |
+
+
+┌─────────────────┐
+                         │   User Query     │
+                         └────────┬─────────┘
+                                  ▼
+                      ┌──────────────────────┐
+                      │   PLANNER AGENT       │
+                      │  breaks query into     │
+                      │  sub-questions/tasks   │
+                      └──────────┬────────────┘
+                                  ▼
+                      ┌──────────────────────┐
+                      │  ROUTER / ORCHESTRATOR│
+                      │  decides which agent(s)│
+                      │  handle each sub-task  │
+                      └──────────┬────────────┘
+                  ┌───────────────┼───────────────┐
+                  ▼               ▼               ▼
+          ┌───────────┐   ┌─────────────┐  ┌─────────────┐
+          │ RETRIEVER │   │ SQL/DB AGENT│  │ TOOL AGENT   │
+          │ (RAG over │   │ (structured │  │ (calls APIs, │
+          │ docs)     │   │  data query)│  │  calculators)│
+          └─────┬─────┘   └──────┬──────┘  └──────┬───────┘
+                └────────────────┼────────────────┘
+                                  ▼
+                      ┌──────────────────────┐
+                      │   ANALYST AGENT       │
+                      │  synthesizes all      │
+                      │  gathered info into    │
+                      │  a draft answer        │
+                      └──────────┬────────────┘
+                                  ▼
+                      ┌──────────────────────┐
+                      │   CRITIC AGENT        │
+                      │  checks draft against  │
+                      │  source docs, flags     │
+                      │  unsupported claims     │
+                      └──────────┬────────────┘
+                          fail?  │  pass?
+                     ┌───────────┴───────────┐
+                     ▼                       ▼
+              back to ANALYST         ┌─────────────┐
+              (max 2 retries)         │ FINAL ANSWER│
+                                       │ + citations │
+                                       └─────────────┘

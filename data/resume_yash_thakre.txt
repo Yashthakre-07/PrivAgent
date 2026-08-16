@@ -1,0 +1,54 @@
+YASH THAKREPhone: +91-6267601396
+AI Full Stack Engineer | C++, Python | GenAI & Agentic SystemsEmail: beyondsynapse@gmail.com
+Roll No.: 23BTB0A33 | B.Tech (Minor in Management) GitHub: github.com/Yashthakre-07
+NIT Warangal, Telangana 506004 LinkedIn: linkedin.com/in/yash-thakre-1aa189312
+yt23btb0a33@student.nitw.ac.in LeetCode: leetcode.com/yashthakre_07
+Education
+National Institute of Technology, Warangal2023 – 2027
+Bachelor of Technology (Minor in Management)CGPA: 8.44
+Lala Kailashpat Singhania School, Sausar 2022
+Central Board of Secondary Education (CBSE Class XII)Percentage: 87%
+Technical Skills
+Languages:C#, Python, C++, SQL (T-SQL, PostgreSQL, SQL Server), MATLAB, R
+Full Stack & Backend:ASP.NET Core Web API, FastAPI, REST APIs, Microservices, Streamlit, OOP, System Design, DSA
+GenAI & Agents:Retrieval-Augmented Generation (RAG), LangGraph, Semantic Kernel SDK, MCP, Azure OpenAI, ChromaDB
+Cloud & DevOps:Microsoft Azure (App Services, Functions), Docker, Kubernetes, Azure DevOps, Git, GitHub Actions, CI/CD
+AI Tools & Data:GitHub Copilot (AI-Assisted Dev), PyTorch, TensorFlow, Scikit-learn, XGBoost, DuckDB, Pandas, NumPy
+Experience
+Deccan AI Experts Hyderabad, India
+AI Model Evaluation Intern (Remote) May 2026 – Present
+–Evaluated outputs across5+ LLMsvia Python pipelines and REST APIs, assessing accuracy, safety, and RLHF alignment.
+–Participated in Agile sprint planning and code reviews; built adversarial test suites surfacing200+ edge casesfor model sprints.
+Indian Institute of Technology (IIT) HyderabadHyderabad, India
+Research Intern, Applied Deep Learning (Advisor: Prof. Renu John)June 2026 – July 2026
+–Trained and benchmarked8+ DL architectureson a68 GBdataset usingPyTorchwith mixed-precision training.
+–Enhanced reconstruction fidelity (PSNR 24 to 34 dB,SSIM 0.61 to 0.91) while cutting computational training runtime by40%.
+Indian Institute of Technology (IIT) BombayMumbai, India
+Research Intern, Computational Modelling (Advisor: Prof. Sandeep Kalva)May 2025 – July 2025
+–Developed acoustic signal reconstruction pipelines inMATLABusing time-reversal backpropagation and delay-and-sum
+beamforming.
+–Parallelized execution viaMATLAB parfor, reducing scan runtime from 2 hours to <5 minutes (24x speedup).
+Key Projects
+StateFlow – Self-Correcting Agentic RAG Engine |LangGraph, Azure OpenAI, PostgreSQL, DockerGitHub
+–Architected an end-to-endRetrieval-Augmented Generation (RAG)system using an 8-node cyclicLangGraphagent
+(CRAG/Self-RAG).
+–Implemented hybrid dense/sparse retrieval (ChromaDB + BM25) viaREST APIs, boostingFaithfulness by 42%andRecall by
+49%.
+–Containerized services withDocker, persisting state checkpoints inPostgreSQLwith end-to-endLangSmithobservability.
+PrivAgent – Multi-Agent LLM Automation System |LangGraph, Semantic Kernel, MCP, AzureGitHub
+–DesignedAI-powered applicationsusing multi-agent orchestration delegating tasks across Research, Web, and Code execution
+agents.
+–IntegratedSemantic Kernel SDKwith fallback routing between local andAzure OpenAILLMs, cutting inference costs by90%.
+–Integrated enterprise tools and standard agent actions using theModel Context Protocol (MCP)for compliant workflows.
+PulseStock – AI Demand Forecasting Platform |ASP.NET Core Web API, FastAPI, XGBoost, DuckDBGitHub
+–Built automateddata pipelinesand zero-leakage ETL usingDuckDB window functionsand Pandera validation on 25k+ records.
+–Trained anXGBoostmodel achieving9.94% WAPE(>90% accuracy) across 5 stores with automated 15% safety buffers.
+–Shipped low-latency backend endpoints (<25ms) inASP.NET Core / FastAPIwith a Streamlit portal and100% pytest CI
+coverage.
+Achievements & Leadership
+Research PublicationAuthored paper on deep learning reconstruction architectures for PAT imaging.2026
+Academic ExcellenceSecured rank in theTop 15%of the department batch at NIT Warangal.2023 – Present
+Competitive ProgrammingSolved460+ problemson LeetCode covering Data Structures, Algorithms,
+and SQL tracks.
+2023 – Present
+Placement Coordinator, NITWCoordinated campus recruitment drives, company relations, and logistics.2024 – Present

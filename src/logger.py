@@ -1,7 +1,7 @@
 import os
 import json
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 
 LOGS_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "logs")
 TRACES_FILE = os.path.join(LOGS_DIR, "traces.jsonl")
@@ -11,7 +11,7 @@ def log_trace(thread_id: str, agent_name: str, message: str, latency_ms: float =
     # Ensure logs directory exists
     os.makedirs(LOGS_DIR, exist_ok=True)
     
-    timestamp = datetime.utcnow().isoformat() + "Z"
+    timestamp = datetime.now(timezone.utc).isoformat()
     
     trace_data = {
         "timestamp": timestamp,
@@ -31,6 +31,10 @@ def log_trace(thread_id: str, agent_name: str, message: str, latency_ms: float =
     except Exception as e:
         print(f"[Logger ERROR] Failed to write trace to file: {e}")
         
-    # Print to console
+    # Print to console safely on Windows
     latency_str = f" [{latency_ms:.1f}ms]" if latency_ms is not None else ""
-    print(f"[{timestamp}] [{level}] [{thread_id}] [{agent_name}]{latency_str} {message}")
+    try:
+        print(f"[{timestamp}] [{level}] [{thread_id}] [{agent_name}]{latency_str} {message}")
+    except UnicodeEncodeError:
+        safe_msg = message.encode("ascii", "replace").decode("ascii")
+        print(f"[{timestamp}] [{level}] [{thread_id}] [{agent_name}]{latency_str} {safe_msg}")
